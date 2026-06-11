@@ -10,10 +10,14 @@ const emptyPost = {
 };
 
 function formatDate(value) {
+  if (!value) return "Unknown date";
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return "Invalid date";
+
   return new Intl.DateTimeFormat("en", {
     dateStyle: "medium",
     timeStyle: "short"
-  }).format(new Date(value));
+  }).format(date);
 }
 
 export default function App() {
