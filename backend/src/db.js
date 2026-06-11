@@ -4,16 +4,12 @@ import path from "path";
 
 // Support loading .env from the root directory
 dotenv.config({ path: path.resolve(process.cwd(), "..", ".env") });
-dotenv.config(); // Also check local directory
+dotenv.config();
 
 const { Pool } = pg;
 
-// AWS RDS usually requires SSL
-const isAws = process.env.DATABASE_URL?.includes("amazonaws.com");
-
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: isAws ? { rejectUnauthorized: false } : false
+  connectionString: process.env.DATABASE_URL
 });
 
 export async function query(text, params) {
