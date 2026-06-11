@@ -1,3 +1,4 @@
+import React from "react";
 import { Edit3, Loader2, Plus, RefreshCcw, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -27,6 +28,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [dbStatus, setDbStatus] = useState({ loading: true, connected: false, message: "Checking database connection..." });
 
   const editingPost = useMemo(
     () => posts.find((post) => post.id === editingId),
@@ -48,7 +50,23 @@ export default function App() {
     }
   }
 
+  async function checkDbConnection() {
+    try {
+      const response = await fetch(`${API_URL}/health`);
+      const body = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(body.message || "Database not connected");
+      }
+
+      setDbStatus({ loading: false, connected: true, message: body.message || "Database is connected" });
+    } catch (requestError) {
+      setDbStatus({ loading: false, connected: false, message: requestError.message || "Database not connected" });
+    }
+  }
+
   useEffect(() => {
+    checkDbConnection();
     loadPosts();
   }, []);
 
@@ -116,8 +134,11 @@ export default function App() {
     <main className="app-shell">
       <section className="intro-band">
         <div>
-          <p className="eyebrow">Personal notes and ideas</p>
-          <h1>Ansil's Blog</h1>
+          <p className="eyebrow">Project status</p>
+          <h1>Project dashboard</h1>
+          <p className={`db-status ${dbStatus.connected ? "connected" : "disconnected"}`}>
+            {dbStatus.loading ? "Checking database connection..." : dbStatus.message}
+          </p>
         </div>
         <button className="icon-button" onClick={loadPosts} title="Refresh posts" type="button">
           <RefreshCcw size={20} />

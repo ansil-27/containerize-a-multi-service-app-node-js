@@ -236,6 +236,24 @@ textarea {
   }
 }
 
+.db-status {
+  border-radius: 999px;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 10px;
+  padding: 10px 16px;
+}
+
+.db-status.connected {
+  background: #dff2ea;
+  color: #155d37;
+}
+
+.db-status.disconnected {
+  background: #fbe8e6;
+  color: #8b2e24;
+}
+
 @media (max-width: 800px) {
   .intro-band {
     align-items: flex-start;

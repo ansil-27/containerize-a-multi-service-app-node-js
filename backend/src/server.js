@@ -11,8 +11,14 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:5173" }));
 app.use(express.json());
 
-app.get("/health", (_request, response) => {
-  response.json({ ok: true, service: "Ansil's Blog API" });
+app.get("/health", async (_request, response) => {
+  try {
+    await query("SELECT 1");
+    response.json({ ok: true, connected: true, message: "Database is connected" });
+  } catch (error) {
+    console.error(error);
+    response.status(503).json({ ok: false, connected: false, message: "Database not connected" });
+  }
 });
 
 app.get("/api/posts", async (_request, response, next) => {
