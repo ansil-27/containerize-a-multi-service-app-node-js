@@ -4,16 +4,16 @@ services:
     container_name: ansils-blog-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ansils_blog
-      POSTGRES_USER: ansil
-      POSTGRES_PASSWORD: ansil_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ansil -d ansils_blog"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -24,11 +24,11 @@ services:
     container_name: ansils-blog-api
     restart: unless-stopped
     environment:
-      PORT: 5000
-      DATABASE_URL: postgres://ansil:ansil_password@db:5432/ansils_blog
-      CLIENT_ORIGIN: http://localhost:5173
+      PORT: ${BACKEND_PORT}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN}
     ports:
-      - "5000:5000"
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -42,9 +42,9 @@ services:
     container_name: ansils-blog-web
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://localhost:5000
+      VITE_API_URL: ${VITE_API_URL}
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT}:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules

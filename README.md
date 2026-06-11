@@ -4,6 +4,8 @@ A basic full-stack blog app with a React frontend, Node.js/Express backend, and 
 
 ## Run With Docker
 
+Database credentials and ports are stored in `.env`. Edit that file before starting Docker if you want different values.
+
 ```bash
 docker compose up --build
 ```
@@ -38,6 +40,8 @@ localhost:5432
 ## Project Structure
 
 ```text
+.env
+.env.example
 backend/
   db/init.sql
   src/db.js
@@ -50,6 +54,13 @@ docker-compose.yml
 ```
 
 ## Useful Commands
+
+Reset the database volume and recreate the seed data:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
 
 Run only the backend locally:
 
