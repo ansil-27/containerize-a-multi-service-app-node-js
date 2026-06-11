@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:5173" }));
+app.use(cors({ origin: true })); // Allow all origins in development to fix AWS/Remote CORS issues
 app.use(express.json());
 
 app.get("/health", async (_request, response) => {
